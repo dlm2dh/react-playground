@@ -4,11 +4,31 @@ var data = [
 ];
 
 var MessageBox = React.createClass({
+  loadMessagesFromServer : function() {
+    $.ajax({
+      url : this.props.url,
+      dataType : "json",
+      cache : false,
+      success : function(data) {
+        this.setState({ data : data });
+      }.bind(this),
+      error : function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+  getInitialState : function() {
+    return { data : [] };
+  },
+  componentDidMount : function() {
+    this.loadMessagesFromServer();
+    setInterval(this.loadMessagesFromServer, this.props.pollInterval);
+  },
   render : function() {
     return (
       <div className="messageBox">
-        <h1>Message</h1>
-        <MessageList data={this.props.data} />
+        <h1>Messages</h1>
+        <MessageList data={this.state.data} />
         <MessageForm />
       </div>
     );
@@ -56,6 +76,6 @@ var Message = React.createClass({
 });
 
 ReactDOM.render(
-  <MessageBox data={data} />,
+  <MessageBox url="/api/messages" pollInterval={2000} />,
   document.getElementById("content")
 );
