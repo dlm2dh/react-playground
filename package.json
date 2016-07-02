@@ -1,0 +1,14 @@
+{
+  "name" : "react-playground",
+  "version" : "0.0.0",
+  "main" : "server.js",
+  "dependencies" : {
+    "body-parser" : "^1.4.3",
+    "express" : "^4.4.5"
+  },
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/dlm2dh/react-playground"
+  },
+  "author" : "Doug Milvaney"
+}
