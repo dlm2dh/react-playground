@@ -45,7 +45,7 @@ app.post("/api/messages", function(req, res) {
       text : req.body.text
     };
 
-    messages.push(newComment);
+    messages.push(newMessage);
     fs.writeFile(MESSAGES_FILE, JSON.stringify(messages, null, 4), function(err) {
       if (err) {
         console.error(err);

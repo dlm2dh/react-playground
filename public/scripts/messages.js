@@ -17,6 +17,25 @@ var MessageBox = React.createClass({
       }.bind(this)
     });
   },
+  handleMessageSubmit : function(message) {
+    var messages = this.state.data;
+    message.id = Date.now();
+    var newMessages = messages.concat([message]);
+    this.setState({ data : newMessages });
+    $.ajax({
+      url : this.props.url,
+      dataType : "json",
+      type : "POST",
+      data : message,
+      success : function(data) {
+        this.setState({ data : data });
+      }.bind(this),
+      error : function(xhr, status, err) {
+        this.setState({ data : messages });
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
   getInitialState : function() {
     return { data : [] };
   },
@@ -28,8 +47,8 @@ var MessageBox = React.createClass({
     return (
       <div className="messageBox">
         <h1>Messages</h1>
-        <MessageList data={this.state.data} />
-        <MessageForm />
+        <MessageList data={ this.state.data } />
+        <MessageForm onMessageSubmit={ this.handleMessageSubmit } />
       </div>
     );
   }
@@ -53,11 +72,40 @@ var MessageList = React.createClass({
 });
 
 var MessageForm = React.createClass({
+  getInitialState : function() {
+    return { author : "", text : "" };
+  },
+  handleAuthorChange : function(e) {
+    this.setState({ author : e.target.value });
+  },
+  handleTextChange : function(e) {
+    this.setState({ text : e.target.value });
+  },
+  handleSubmit : function(e) {
+    e.preventDefault();
+    var author = this.state.author.trim();
+    var text = this.state.text.trim();
+    if (!text || !author) {
+      return;
+    }
+    this.props.onMessageSubmit({ author : author, text : text });
+    this.setState({ author : "", text : "" });
+  },
   render : function() {
     return (
-      <div className="messageForm">
-        Hello, world! I am a MessageForm.
-      </div>
+      <form className="messageForm" onSubmit={ this.handleSubmit }>
+        <input
+          type="text"
+          placeholder="Your name"
+          onChange={ this.handleAuthorChange }
+        />
+        <input
+          type="text"
+          placeholder="Say something..."
+          onChange={ this.handleTextChange }
+        />
+        <input type="submit" value="Post" />
+      </form>
     );
   }
 });
