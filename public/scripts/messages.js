@@ -1,7 +1,15 @@
-var data = [
-  { id : 1, author : "Doug Milvaney", text : "My first message" },
-  { id : 2, author : "Jane Doe", text : "Here is another message"}
-];
+var Message = React.createClass({
+  render : function() {
+    return (
+      <div className="message">
+        <h2 className="messageAuthor">
+          { this.props.author }
+        </h2>
+        { this.props.children }
+      </div>
+    );
+  }
+});
 
 var MessageBox = React.createClass({
   loadMessagesFromServer : function() {
@@ -106,19 +114,6 @@ var MessageForm = React.createClass({
         />
         <input type="submit" value="Post" />
       </form>
-    );
-  }
-});
-
-var Message = React.createClass({
-  render : function() {
-    return (
-      <div className="message">
-        <h2 className="messageAuthor">
-          { this.props.author }
-        </h2>
-        { this.props.author }
-      </div>
     );
   }
 });
