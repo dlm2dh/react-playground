@@ -21,12 +21,15 @@ var ProductTable = React.createClass({
     var rows = [];
     var lastCategory = null;
     this.props.products.forEach(function(product) {
+      if (product.name.indexOf(this.props.filterText) === -1 && product.brand.indexOf(this.props.filterText) === -1) {
+        return;
+      }
       if (product.category !== lastCategory) {
         rows.push(<ProductCategoryRow category={ product.category } key={ product.category } />);
       }
       rows.push(<ProductRow product={ product } key={ product.name } />);
       lastCategory = product.category;
-    });
+    }.bind(this));
 
     return (
       <table>
@@ -54,11 +57,21 @@ var SearchBar = React.createClass({
 });
 
 var FilterableProductTable = React.createClass({
+  getInitialState : function() {
+    return {
+        filterText : ""
+    };
+  },
   render : function() {
     return (
       <div>
-        <SearchBar />
-        <ProductTable products={ this.props.products } />
+        <SearchBar
+          filterText={ this.state.filterText }
+        />
+        <ProductTable
+          products={ this.props.products }
+          filterText={ this.state.filterText }
+        />
       </div>
     );
   }
